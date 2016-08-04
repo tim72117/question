@@ -10,7 +10,7 @@
 <script src="/js/timer_v5.js"></script>
 <script src="/js/qcheck_v4.js"></script>
 
-<link rel="stylesheet" href="/packages/vendor/package/css/page_struct.css" />
+<link rel="stylesheet" href="/packages/tim72117/question/css/page_struct.css" />
 <link rel="stylesheet" href="/resource/<?=$doc->dir?>/banner.css" />
 <link rel="stylesheet" href="/css/Semantic-UI/2.1.8/components/dimmer.min.css" />
 <link rel="stylesheet" href="/css/Semantic-UI/2.1.8/components/icon.min.css" />
