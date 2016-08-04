@@ -1,0 +1,26 @@
+{
+    "name": "tim72117/question",
+    "description": "",
+    "version": "1.0",
+    "authors": [
+        {
+            "name": "tim72117",
+            "email": "tim72117@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "autoload": {
+        "classmap": [
+            "src/models",
+            "src/controllers",
+            "src/migrations",
+            "src/library"
+        ],
+        "psr-0": {
+            "Tim72117\\Question\\": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}
