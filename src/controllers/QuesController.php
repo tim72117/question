@@ -253,7 +253,7 @@ class QuesController extends BaseController {
             if ($redirect)
                 return $redirect;
         }
-        return Redirect::to($this->root.'/end');
+        return Redirect::to('ques/' . $this->root.'/end');
     }
 
     public function loginPage()
