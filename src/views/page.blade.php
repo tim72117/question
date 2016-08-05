@@ -21,18 +21,18 @@ var percent = '<?=$percent?>';
 var isCheck = false;
 
 $(document).ready(function(){
-	
-	$('form[name=form1]').submit(function(){
-		if(!isCheck){
-			return false;
-		}
-	});
 
-	<?=$questionEvent?>
+    $('form[name=form1]').submit(function(){
+        if(!isCheck){
+            return false;
+        }
+    });
 
-	$('form').find(':radio:checked,:checkbox:checked').each(function(){$(this).triggerHandler('click');});
-	$('form').find('select option:first-child:not(:selected)').each(function(){$(this).parent('select').triggerHandler('change');});
-	$('#checkForm').prop('disabled', false);	
+    <?=$questionEvent?>
+
+    $('form').find(':radio:checked,:checkbox:checked').each(function(){$(this).triggerHandler('click');});
+    $('form').find('select option:first-child:not(:selected)').each(function(){$(this).parent('select').triggerHandler('change');});
+    $('#checkForm').prop('disabled', false);
 
     //送出檢誤
     $('#checkForm').click(function(){
@@ -45,7 +45,7 @@ $(document).ready(function(){
         var testarray = {};
         var qcheck = $(':input.qcheck');
 
-        qcheck.each(function(){	
+        qcheck.each(function(){
             var name = $(this).attr('name');
 
             if( !testarray.hasOwnProperty(name) ){
@@ -54,7 +54,7 @@ $(document).ready(function(){
 
                 if( <?=(($isPhone?'false':'true') . '&&')?> checkEmpty(obj) ){
                     checkOK = false;
-                    return false;		
+                    return false;
                 }
 
                 if( obj.filter(':disabled,:hidden').length==obj.length )
@@ -63,7 +63,7 @@ $(document).ready(function(){
 
                 testarray[name] = name;
             }
-        });	
+        });
 
         if(!checkOK){
             $('#checkForm').prop('disabled', false);
@@ -88,29 +88,29 @@ $(document).ready(function(){
             <h1 class="ui header" id="logout_timer"></h1>
         </div>
     </div>
-<div id="building">
-	<div class="hint" style="position:relative">
-<!--		<div id="tooltip" style="position:absolute;left:10px;top:0;width:150px;height:80px;color:#000;z-index:-1"></div>-->
-	</div>
-	<div id="header" class="banner<?=$page?>"></div>
-	<div id="contents">
-		
-		<form action="write" method="post" name="form1">
-			<input type="hidden" name="check_atuo_text" value="" />
-			<input type="hidden" name="page" value="<?=$page?>" />
-			<input type="hidden" name="stime" value="<?=date("Y/n/d H:i:s")?>" />
-			<input type="hidden" name="_token" value="<?=csrf_token()?>" />
-
-			<div class="readme"></div>
-			<?=$question?>
-        </form>
-        <div id="submit" style="margin:0 auto; text-align:center">
-            <button id="checkForm" disabled="disabled" class="button-green" style="width:100px;height:40px;margin:10px 0 0 0;padding:10px;text-align: center;font-size:15px;color:#fff">下一頁</button>
+    <div id="building">
+        <div class="hint" style="position:relative">
+    <!--        <div id="tooltip" style="position:absolute;left:10px;top:0;width:150px;height:80px;color:#000;z-index:-1"></div>-->
         </div>
-		<div id="init_value" style="display: none"><?=$init_value?></div>
-		
-	</div>
-	<footer><?=$child_footer?></footer>
-</div>
+        <div id="header" class="banner<?=$page?>"></div>
+        <div id="contents">
+
+            <form action="write" method="post" name="form1">
+                <input type="hidden" name="check_atuo_text" value="" />
+                <input type="hidden" name="page" value="<?=$page?>" />
+                <input type="hidden" name="stime" value="<?=date("Y/n/d H:i:s")?>" />
+                <input type="hidden" name="_token" value="<?=csrf_token()?>" />
+
+                <div class="readme"></div>
+                <?=$question?>
+            </form>
+            <div id="submit" style="margin:0 auto; text-align:center">
+                <button id="checkForm" disabled="disabled" class="button-green" style="width:100px;height:40px;margin:10px 0 0 0;padding:10px;text-align: center;font-size:15px;color:#fff">下一頁</button>
+            </div>
+            <div id="init_value" style="display: none"><?=$init_value?></div>
+
+        </div>
+        <footer><?=$child_footer?></footer>
+    </div>
 </body>
 </html>
