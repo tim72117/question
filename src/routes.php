@@ -42,7 +42,7 @@ Route::filter('ques-folder', function($route) {
 
 Route::filter('ques-login', function($route) {
     $root = $route->getParameter('root');
-    if (!Answerer::check($root)) {
+    if (!Ques\Answerer::check($root)) {
         Session::flush();
         return Redirect::to('/ques/' . $root);
     }
