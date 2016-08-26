@@ -30,7 +30,7 @@ Route::filter('ques-init', function($route) {
     $root = $route->getParameter('root');
     if (Ques\Answerer::check($root)) {
         Session::flush();
-        return Redirect::to('/ques/' . $root);
+        return Redirect::to(Request::fullUrl());
     }
 });
 
@@ -44,6 +44,6 @@ Route::filter('ques-login', function($route) {
     $root = $route->getParameter('root');
     if (!Ques\Answerer::check($root)) {
         Session::flush();
-        return Redirect::to('/ques/' . $root);
+        return Redirect::to(Request::fullUrl());
     }
 });
