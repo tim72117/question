@@ -62,7 +62,7 @@ class QuesController extends BaseController {
 
     public function init()
     {
-        $this->newcid = Answerer::newcid();
+        $this->newcid = Ques\Answerer::newcid();
         $this->page = $this->loadpage()['page'];
         $this->pages_amount = $this->doc->pages->count();
         $this->percent = floor((($this->page-1)/$this->pages_amount)*100);
@@ -334,7 +334,7 @@ class QuesController extends BaseController {
 
     public function skip_page($page_array)
     {
-        $this->newcid = Answerer::newcid();
+        $this->newcid = Ques\Answerer::newcid();
         $tStamp = date("Y/n/d H:i:s");
         if (is_array($page_array)) {
             foreach ($page_array as $page) {
