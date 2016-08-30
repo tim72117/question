@@ -14,27 +14,27 @@
 </head>
 
 <body>
-	<?=$child_head?>
-	<div class="ui segment" style="width:800px;margin:0 auto">
-			
-		<div class="ui basic segment" style="width:500px;margin:0 auto">
-	        <?=Form::open(array('url' => '/ques/' . $doc->dir . '/qlogin', 'method' => 'post', 'class' => 'ui form attached segment' . ($errors->isEmpty() ? '' : ' error')))?>
-				<input type="hidden" name="_token2" value="<?=dddos_token()?>" />
-				<?=$child_body?>
-			<?=Form::close()?>
-			<div class="ui bottom attached warning message">
-			    <i class="icon help"></i>
-			    <?=link_to('/ques/' . $doc->dir . '/share/chrome', '填答時有遇到問題嗎?', ['target'=>'_blank'])?>
-			    <br />
-			    <i class="icon help"></i>
-			    <?=link_to('/ques/' . $doc->id . '/report', '需要協助嗎?', ['target'=>'_blank'])?>
-			</div>
-		    <div class="ui basic segment">
-		    	<div id="twcaseal" class="SMALL"><img src="/images/twca.gif" /></div>
-		    </div>
-		</div>
-		
-		<?=$child_footer?>
-	</div>
+    <?=$child_head?>
+    <div class="ui segment" style="width:800px;margin:0 auto">
+
+        <div class="ui basic segment" style="width:500px;margin:0 auto">
+            <?=Form::open(array('url' => '/ques/' . $doc->dir . '/qlogin', 'method' => 'post', 'class' => 'ui form attached segment' . ($errors->isEmpty() ? '' : ' error')))?>
+                <input type="hidden" name="_token2" value="<?=dddos_token()?>" />
+                <?=$child_body?>
+            <?=Form::close()?>
+            <div class="ui bottom attached warning message">
+                <i class="icon help"></i>
+                <?=link_to('/ques/' . $doc->dir . '/share/chrome', '填答時有遇到問題嗎?', ['target'=>'_blank'])?>
+                <br />
+                <i class="icon help"></i>
+                <?=link_to('/ques/' . $doc->id . '/report', '需要協助嗎?', ['target'=>'_blank'])?>
+            </div>
+            <div class="ui basic segment">
+                <div id="twcaseal" class="SMALL"><img src="/images/twca.gif" /></div>
+            </div>
+        </div>
+
+        <?=$child_footer?>
+    </div>
 </body>
 </html>

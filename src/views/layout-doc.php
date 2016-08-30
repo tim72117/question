@@ -15,7 +15,7 @@
 
 </head>
 
-<body>			
-	<?=$child?>		
+<body>
+    <?=$child?>
 </body>
 </html>

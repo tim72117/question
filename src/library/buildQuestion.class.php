@@ -18,7 +18,6 @@ class buildQuestion {
     {
         $html = '';
 
-        $is_hint = false;
         $is_disabled_skipfrom = false;
 
         $hn_style = '';
@@ -44,18 +43,10 @@ class buildQuestion {
         $display_style = ($layer==0||$parrent=='list')?'':' display:none';
 
 
-        if( isset($_SESSION['isShuntN']) && isset($_SESSION['isShuntArray']) )
-        if( in_array($_SESSION['isShuntN'],$_SESSION['isShuntArray']) ){
-            if( isset($questionAttr['shunt']) )
-            if( !in_array($_SESSION['isShuntN'],explode(',',$questionAttr['shunt'])) ){
-                $display_style = ' display:none';
-            }
-        }
-
         if( $question->getName()=="question" && $question->type=='explain' ){
-            $html .= '<div class="main_explain">';
+            $html .= '<md-card-content class="main_explain">';
         }elseif( $question->getName()=="question" ){
-            $html .= '<div class="main" style="'.$display_style.'">';
+            $html .= '<md-card-content class="main" style="'.$display_style.'">';
         }
 
         if( count(self::$hide)>0 && in_array($question->id, self::$hide) ){
@@ -72,24 +63,13 @@ class buildQuestion {
         }
 
 
-
         $title = '';
         if( (string)$question->title!='' )
             $title .= (string)$question->title;
 
-        if($is_hint)
-        if($question->ruletip!='')
-            $title .= '<p><span class="small-purple">'.(string)$question->ruletip.'</span></p>';
-
-
-        $ans_option_voc = '';
 
         if( $question->type=='explain' ){
-            if( isset($_SESSION['voice']) && $_SESSION['voice']==1 ){
-                    $html .= '<div class="readme" style="background-color:transparent"><b class="voice" target="voice_'.$question->id.'">'.(string)$question->title.'</b></div>';
-                }else{
-                    $html .= '<div class="readme" style="background-color:transparent">'.(string)$question->title.'</div>';
-                }
+            $html .= '<div class="readme" style="background-color:transparent">'.(string)$question->title.'</div>';
         }else{
 
             if( (string)$question->title!='' ){
@@ -103,19 +83,13 @@ class buildQuestion {
                     }
                 }
 
-                if( isset($_SESSION['voice']) && $_SESSION['voice']==1 ){
-                    $html .= '<h4 class="title voice" target="voice_'.$question->id.'" style="'.$hn_style.'">'.$title_string.'</h4>';
-                }else{
-                    $html .= '<h4 class="title" style="'.$hn_style.'">'.$title_string.'</h4>';
-                }
+                $html .= '<h4 class="title" style="'.$hn_style.'">'.$title_string.'</h4>';
 
             }else{
                 $title_string = '';
                 if( (string)$question->idlab!='' )
                     $title_string = ($question->idlab.' ').$title;
                 $html .= '<h4 class="title" style="'.$hn_style.'">'.$title_string.'</h4>';
-
-
             }
         }
 
@@ -148,8 +122,6 @@ class buildQuestion {
                 $html .= '<input type="radio" class="qcheck" id="'.$question->id.'_l'.$item_count.'" name="'.$question->answer->name.'" value="'.$attr["value"].'"'.($is_disabled?' disabled="disabled"':'').' />';
                 $html .= '<label for="'.$question->id.'_l'.$item_count.'" class="radio">'.(string)$answer.'</label>';
 
-                if( $is_hint && $attr['ruletip']!='' )
-                    $html .= '<span class="small-purple">'.$attr['ruletip']."</span>";
                 foreach($answer->text as $text){
                     $html .= '<span style="font-size:.8em;color:#666666">'.$text.'</span>';
                 }
@@ -189,11 +161,8 @@ class buildQuestion {
                         $option .= '<option value="'.$attr["value"].'" '.(count($question->answer->xmlfile)>0?'orgin="true"':'').'>'.(string)$answer.'</option>';
                     }
 
-                    $ans_option_voc .= '選項'.$item_count.'  '.(string)$answer.'。';
                 }
                 $item_count++;
-
-
 
             break;
             //------------------------------------------------text
@@ -492,9 +461,6 @@ class buildQuestion {
 
         $html .= '</div>';
 
-        if( isset($_SESSION['voice']) && $_SESSION['voice']==1 )
-            $html .= '<div class="voice_box" id="voice_'.$question->id.'" style="display:none">'.$ans_option_voc.'</div>';
-
         if( $question->type!='explain' && $layer==0 )
             $html .= '<p class="contribute"></p>';
 
@@ -502,7 +468,7 @@ class buildQuestion {
 
 
         if( $question->getName()=="question" )
-            $html .= '</div>';
+            $html .= '</md-card-content>';
 
         return $html;
     }
