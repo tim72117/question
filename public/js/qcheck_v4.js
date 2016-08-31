@@ -61,17 +61,17 @@ function checkEmpty(obj){
         case "checkbox":
 
             var value = obj.attr('checkOK')==='false' ? '' : '1';
-            var id = obj.parent('p').parent('div').parent('div').parent('div').attr('id');
+            var id = obj.parent('.fieldA').parent().attr('id');
             var main = $('#'+id);
             var atitle = main.children('h2,h3,h4').text()!=='' ? $('#'+id).children('h2,h3,h4').text() : '';
 
-            value = main.children('div.fieldA').children('div').children('p').children(':checkbox').is(':checked') ? '1' : '';
+            value = main.children('.fieldA').children(':checkbox').is(':checked') ? '1' : '';
 
             if( value==='' ){
                 obj.eq(0).focus();
                 $('body').scrollTop(main.offset().top-50);
                 main.bind('click',function(){
-                    if( $(this).children('div.fieldA').children('div').children('p').children(':checkbox').is(':checked') ){
+                    if( $(this).children('.fieldA').children(':checkbox').is(':checked') ){
                         if( main.parent().is('.main') ){
                             main.parent('.main').removeClass('mark');
                         }else{

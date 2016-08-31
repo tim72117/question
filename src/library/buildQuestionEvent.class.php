@@ -104,7 +104,6 @@ class buildQuestionEvent {
                     }
                 }
 
-
                 $jsObjShow_script .= "case '".$itemAttr->value."':";
                 if(count($inSubSkip_array)>0){
                     $jsObjShow_script .= "\$(allSub).not('".implode(",",$inSubSkip_array)."').find('div.fieldA').qshow();";
@@ -159,107 +158,6 @@ class buildQuestionEvent {
             $jsObj_script .= "});";
         }
         //-------------------------------------------------------------------------------------------------
-        //select uplv_target
-
-        //------------------------------------------checkbox reset----------------------------------------
-        $checkbox_group = array();
-        $answer_limit_array = $question_array->xpath("//type[.='checkbox']/parent::*/answer[@limit]/parent::*");
-
-        if(is_array($answer_limit_array))
-        foreach($answer_limit_array as $answer_limit){
-
-            $answer_limitAttr = $answer_limit->answer->attributes();
-            $answer_limit_amount = $answer_limitAttr['limit'];
-
-            $id = (string)$answer_limit->id;
-
-            if( !isset($checkbox_group[$id]) ) $checkbox_group[$id] = array();
-            $checkbox_group[$id]['limit'] = $answer_limit_amount;
-
-
-            /*
-            $jsObj_script .= "\$('#".(string)$answer_limit->id."').children('.fieldA').children('div').children('p').children('input').click(function(){";
-            $jsObj_script .= "if(\$('#".(string)$answer_limit->id."').children('.fieldA').children('div').children('p').children('input:checked').length > ".$answer_limit_amount."){";
-            $jsObj_script .= "alert('請勿選超過".$answer_limit_amount."個');";
-            $jsObj_script .= "\$(this).prop('checked',false).triggerHandler('click');createCheckboxEvent(1,1);";
-            $jsObj_script .= "}";
-            $jsObj_script .= "});";
-            */
-
-        }
-
-
-
-
-
-        $item_reset_array = $question_array->xpath("//type[.='checkbox']/parent::*/answer/item[@reset]/parent::*/parent::*");
-
-
-        if(is_array($item_reset_array))
-        foreach($item_reset_array as $item_reset_q){
-
-            $id = (string)$item_reset_q->id;
-
-            $reset_name_array = array();
-            foreach( $item_reset_q->answer->item as $item_rest ){
-                $item_restAttr = $item_rest->attributes();
-                if( isset($item_restAttr['reset']) ){
-                    $reset_name = 'input[name='.$item_restAttr['name'].']';
-                    array_push($reset_name_array,$reset_name);
-                }
-            }
-
-            if( !isset($checkbox_group[$id]) ) $checkbox_group[$id] = array();
-
-            $checkbox_group[$id]['reset'] = implode(',',$reset_name_array);
-            if( !isset($checkbox_group[$id]['limit']) ) $checkbox_group[$id]['limit'] = 0;
-
-
-        }
-
-        foreach($checkbox_group as $qid => $checkbox){
-            $reset = isset($checkbox['reset'])?$checkbox['reset']:null;
-            $limit = isset($checkbox['limit'])?$checkbox['limit']:0;
-            $jsObj_script .= "createCheckboxEvent('".$qid."','".$reset."',".$limit.");";
-        }
-
-        $jsObj_script .= "function createCheckboxEvent(id,reset,limit){";
-        $jsObj_script .= "\$('#'+id).children('.fieldA').children('div').children('p').children('input').click(function(){";
-
-        $jsObj_script .= "if(reset!=null)";
-        $jsObj_script .= "if(\$(this).is(':checked'))";
-        $jsObj_script .= "if(\$(this).is(reset)){";
-        $jsObj_script .= "\$(this).parent('p').parent('div').siblings().children('p').children('input:checked').each(function(){\$(this).prop('checked',false).triggerHandler('click');});";
-        $jsObj_script .= "}else{";
-        $jsObj_script .= "\$(reset).filter(':checked').prop('checked',false).triggerHandler('click');";
-        $jsObj_script .= "};";
-
-        $jsObj_script .= "if(limit!=0)";
-        $jsObj_script .= "if(\$('#'+id).children('.fieldA').children('div').children('p').children('input:checked').length > limit){";
-        $jsObj_script .= "alert('請勿選超過'+limit+'個');";
-        $jsObj_script .= "\$(this).prop('checked',false).triggerHandler('click');createCheckboxEvent(1,1);";
-        $jsObj_script .= "}";
-
-
-        $jsObj_script .= "});";
-        $jsObj_script .= "};";
-
-
-        //-------------------------------------------------------------------------------------------------
-
-        //checkbox sub
-        $jsObj_script .= "\$(':checkbox[sub]').click(function(){";
-        $jsObj_script .= "  var sub = \$(this).attr('sub');";
-        $jsObj_script .= "  if( \$(this).is(':checked') ){";
-        $jsObj_script .= "      \$(sub).qshow();";
-        $jsObj_script .= "  }else{      ";
-        $jsObj_script .= "      \$(sub).children('div').find('input').removeAttr('checked').each(function(){\$(this).triggerHandler('click');});";
-        $jsObj_script .= "      \$(sub).qhide();";
-        $jsObj_script .= "  }";
-        $jsObj_script .= "}); ";
-        //-------------------------------------------------------------------------------------------------
-
-
 
         return $jsObj_script;
     }

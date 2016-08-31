@@ -46,7 +46,7 @@ class buildQuestion {
         if( $question->getName()=="question" && $question->type=='explain' ){
             $html .= '<md-card-content class="main_explain">';
         }elseif( $question->getName()=="question" ){
-            $html .= '<md-card-content class="main" style="'.$display_style.'">';
+            $html .= '<md-card-content class="main" style="'.$display_style.'" ng-class="{mark: '.$question->id.'_error}">';
         }
 
         if( count(self::$hide)>0 && in_array($question->id, self::$hide) ){
@@ -94,7 +94,7 @@ class buildQuestion {
         }
 
 
-        $html .= '<div class="fieldA '.$class.'" init="'.$div_init.'" style="'.$fieldA_display_style.';overflow : auto;position:static">';
+        $html .= '<div  class="fieldA '.$class.'" init="'.$div_init.'" style="'.$fieldA_display_style.';overflow : auto;position:static">';
 
         $option = "";
         $table = '';
@@ -202,59 +202,38 @@ class buildQuestion {
             //------------------------------------------------checkbox
             case "checkbox":
 
-                $subs_array = NULL;
-                if( $attr['sub']!='' )
-                    $subs_array = array_map( create_function('$id', 'return "#".$id;'),explode(",",$attr['sub']) );
-                $subs_string = '';
-                if( is_array($subs_array) )
-                    $subs_string = ' sub="'.implode(",",$subs_array).'"';
-
                 $checkbox_style = $question->type->attributes();
 
-                if( $checkbox_style['cstyle']!='2' ){
+                $limit = isset($question->answer->attributes()['limit']) ? $question->answer->attributes()['limit'] : 0;
+                $reset = isset($attr['reset']) ? 'true' : 'false';
 
-                    if( count($question->answer->item)>10 ){
-                        $html .= '<div class="checkbox horizontal">';
-                    }else{
-                        $html .= '<div class="checkbox horizontal less">';
+                $html .= '<div flex="50"><md-checkbox
+                    ng-model="'.$question->id.'['.self::$label_count.'].checked"
+                    ng-change="checkCheckboxLimit('.$limit.', \''.$question->id.'\', '.self::$label_count.', '.$reset.')">'.(string)$answer.'</md-checkbox></div>';
+
+                $html .= '<input type="checkbox"
+                    style="position:absolute;z-index:-1"
+                    ng-model="'.$question->id.'['.self::$label_count.'].checked"
+                    class="qcheck"
+                    id="lb'.self::$label_count.'"
+                    name="'.$attr["name"].'"
+                    value="1" '.($is_disabled?'disabled="disabled"':'').'
+                    size="'.$question->size.'" />';
+
+                $sub_array = explode(',', $attr["sub"]);
+                foreach($sub_array as $attr_i){
+                    $sub = $question_array->xpath("/page/question_sub/id[.='".$attr_i."']/parent::*");
+                    if (isset($sub[0])) {
+                        $html .= '<div ng-if="'.$question->id.'['.self::$label_count.'].checked">';
+                        $html .= self::buildQuestion_simp($sub[0],$question_array,$layer+1,(string)$question->type);
+                        $html .= '</div>';
                     }
-                    $html .= '<p class="checkbox">';
-                    $html .= '<input type="checkbox" class="qcheck" id="lb'.self::$label_count.'" name="'.$attr["name"].'" value="1" '.($is_disabled?'disabled="disabled"':'').' size="'.$question->size.'" '.$subs_string.' />';
-                    $html .= '<label for="lb'.self::$label_count.'" class="checkbox">'.(string)$answer.'</label>';
-                    self::$label_count++;
-                    $html .= '</p>';
-
-                    $sub_array = explode(",", $attr["sub"]);
-                    foreach($sub_array as $attr_i){
-                        $sub = $question_array->xpath("/page/question_sub/id[.='".$attr_i."']/parent::*");
-                        if( isset($sub[0]) )
-                            $html .= self::buildQuestion_simp($sub[0],$question_array,$layer+1,(string)$question->type);
-                    }
-                    $html .= '</div>';
-
-                }elseif( $checkbox_style['cstyle']=='2' ){
-
-                    $html .= '<div>';
-                    $html .= '<p class="checkbox">';
-                    $html .= '<input type="checkbox" class="qcheck" id="lb'.self::$label_count.'" name="'.$attr["name"].'" value="1" '.($is_disabled?'disabled="disabled"':'').' size="'.$question->size.'" '.$subs_string.' />';
-                    $html .= '<label style="cursor:pointer" for="lb'.self::$label_count.'" class="checkbox">'.(string)$answer.'</label>';
-                    self::$label_count++;
-                    $html .= '</p>';
-
-                    $sub_array = explode(",", $attr["sub"]);
-                    foreach($sub_array as $attr_i){
-                        $sub = $question_array->xpath("/page/question_sub/id[.='".$attr_i."']/parent::*");
-                        if( isset($sub[0]) )
-                            $html .= self::buildQuestion_simp($sub[0],$question_array,$layer+1,(string)$question->type);
-                    }
-                    $html .= '</div>';
-
                 }
+
+                self::$label_count++;
                 $item_count++;
 
-
-
-                if( !array_key_exists((string)$attr["name"],self::$name) )
+                if (!array_key_exists((string)$attr["name"],self::$name))
                     self::$name[(string)$attr["name"]] = array('type'=>'checkbox','layer'=>$layer);
 
             break;
@@ -479,7 +458,7 @@ class buildQuestion {
         $html = '';
         switch($question->type){
         case "text":
-            $html .= '<div id="'.$question->id.'" style="display:none;text-indent:20px">';
+            $html .= '<div id="'.$question->id.'" style="text-indent:20px">';
             $html .= '<p style="margin:2px">'.(string)$question->title.'</p>';
             foreach($question->answer->item as $answer){
                 $attr = $answer->attributes();
@@ -490,15 +469,13 @@ class buildQuestion {
                     'placeholder' => $attr["sub_title"],
                     'class' => 'fat qcheck',
                     'parrent' => $parrent,
-                    'disabled' => $is_disabled ? 'disabled' : '',
+                    //'disabled' => $is_disabled ? 'disabled' : '',
                     'maxlength' => $attr["size"],
                     'textsize' => $attr["size"],
                     'size' => $attr["size"],
                     'filter' => $attr["filter"],
                     'style' => 'min-width:'.$sub_title_length.'em'
                 ));
-                //$html .= '<input class="fat" placeholder="'.$attr["sub_title"].'" type="text" parrent="'.$parrent.'" name="'.$attr["name"].'" value="" '.($is_disabled?'disabled="disabled"':'');
-                //$html .= ' maxlength="'.$attr["size"].'" textsize="'.$attr["size"].'" size="'.$attr["size"].'" filter="'.$attr["filter"].'" />';
                 if( $type_attr['style']!='short' ){
                     $html .= '<p style="margin:2px">'.(string)$answer.$input_text.'</p>';
                 }else{
@@ -507,7 +484,6 @@ class buildQuestion {
 
                 if( !array_key_exists((string)$attr["name"],self::$name) )
                     self::$name[(string)$attr["name"]] = array('type'=>'text','layer'=>$layer);
-
 
             }
             $html .= '</div>';

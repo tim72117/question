@@ -25,6 +25,27 @@
 
 var app = angular.module('app', ['ngSanitize', 'ngMaterial']);
 
+app.controller('quesController', function($scope, $filter) {
+
+    $scope.checkCheckboxLimit = function(limit, id, index, reset) {
+        var items = Object.keys($scope[id]).map(function (key) {return $scope[id][key]});
+        $scope[id][index].reset = reset;
+
+        for (var i=0; i < items.length; i++) {
+            if (reset) {
+                items[i].checked = items[i].reset;
+            }
+            if (!reset && items[i].reset) {
+                items[i].checked = false;
+            }
+        }
+        if (limit != 0 && $filter('filter')(items, {checked: true}).length > limit) {
+            $scope[id][index].checked = false;
+        }
+    };
+
+});
+
 var percent = '<?=$percent?>';
 var isCheck = false;
 
@@ -90,7 +111,7 @@ $(document).ready(function(){
 });
 </script>
 </head>
-<body>
+<body ng-controller="quesController">
     <md-content layout="row" layout-align="center start">
         <div class="ui page dimmer">
             <div class="content">
