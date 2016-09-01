@@ -32,8 +32,8 @@ app.controller('quesController', function($scope, $filter) {
         $scope[id][index].reset = reset;
 
         for (var i=0; i < items.length; i++) {
-            if (reset) {
-                items[i].checked = items[i].reset;
+            if (reset && !items[i].reset) {
+                items[i].checked = false;
             }
             if (!reset && items[i].reset) {
                 items[i].checked = false;
