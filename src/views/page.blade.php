@@ -27,6 +27,7 @@ var app = angular.module('app', ['ngSanitize', 'ngMaterial']);
 
 app.controller('quesController', function($scope, $filter) {
 
+    $scope.percent = '<?=$percent?>';
     $scope.checkCheckboxLimit = function(limit, id, index, reset) {
         var items = Object.keys($scope[id]).map(function (key) {return $scope[id][key]});
         $scope[id][index].reset = reset;
@@ -46,7 +47,11 @@ app.controller('quesController', function($scope, $filter) {
 
 });
 
-var percent = '<?=$percent?>';
+app.config(function ($compileProvider, $mdIconProvider, $mdThemingProvider) {
+    $compileProvider.debugInfoEnabled(false);
+    $mdThemingProvider.theme('default').warnPalette('green');
+});
+
 var isCheck = false;
 
 $(document).ready(function(){
@@ -124,6 +129,7 @@ $(document).ready(function(){
         <!--        <div id="tooltip" style="position:absolute;left:10px;top:0;width:150px;height:80px;color:#000;z-index:-1"></div>-->
             </div>
             <md-card id="contents">
+                <md-progress-linear class="md-warn" md-mode="buffer" value="@{{percent}}" md-buffer-value="@{{percent*1+10}}"></md-progress-linear>
 
                 <form action="write" method="post" name="form1">
                     <input type="hidden" name="check_atuo_text" value="" />
