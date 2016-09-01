@@ -30,7 +30,7 @@ class buildQuestion {
 
         $questionAttr = $question->attributes();
         if($questionAttr['skipfrom']!=''){
-            if( $questionAttr['init']=='disabled' ){
+            if ($questionAttr['init']=='disabled' ){
                 $fieldA_display_style = ' display:none';
                 $hn_style = ' color:#777';
                 $is_disabled_skipfrom = true;
@@ -43,19 +43,19 @@ class buildQuestion {
         $display_style = ($layer==0||$parrent=='list')?'':' display:none';
 
 
-        if( $question->getName()=="question" && $question->type=='explain' ){
+        if ($question->getName()=="question" && $question->type=='explain' ){
             $html .= '<md-card-content class="main_explain">';
-        }elseif( $question->getName()=="question" ){
+        }elseif ($question->getName()=="question" ){
             $html .= '<md-card-content class="main" style="'.$display_style.'" ng-class="{mark: '.$question->id.'_error}">';
         }
 
-        if( count(self::$hide)>0 && in_array($question->id, self::$hide) ){
+        if (count(self::$hide)>0 && in_array($question->id, self::$hide)){
             $display_style .= ';display:none';
         }
 
-        if( $question->type != 'explain' && $parrent != 'list' ){
+        if ($question->type != 'explain' && $parrent != 'list' ){
             $html .= '<div id="'.$question->id.'" parrent="'.$parrent.'" class="layer'.$layer.'" style="'.$display_style.'">';
-        }elseif( $parrent == 'list' ){
+        }elseif ($parrent == 'list' ){
             $html .= '<div id="'.$question->id.'" parrent="'.$parrent.'" class="layer0" style="'.$display_style.'">';
         }else{
             $html .= '<div id="'.$question->id.'" parrent="'.$parrent.'" style="'.$display_style.'">';
@@ -64,19 +64,19 @@ class buildQuestion {
 
 
         $title = '';
-        if( (string)$question->title!='' )
+        if ((string)$question->title!='' )
             $title .= (string)$question->title;
 
 
-        if( $question->type=='explain' ){
+        if ($question->type=='explain' ){
             $html .= '<div class="readme" style="background-color:transparent">'.(string)$question->title.'</div>';
         }else{
 
-            if( (string)$question->title!='' ){
+            if ((string)$question->title!='' ){
                 if($layer==0){
                     $title_string = '<strong>'.((string)$question->idlab).'</strong> '.$title.($fieldA_display_style==' display:none'?'<p style="font-size:10px;color:red">此題無須填答</p>':'');
                 }else{
-                    if( (string)$question->idlab=='' ){
+                    if ((string)$question->idlab=='' ){
                         $title_string = ''.$title;
                     }else{
                         $title_string = '<strong>'.$question->idlab.'</strong>'.$title;
@@ -87,7 +87,7 @@ class buildQuestion {
 
             }else{
                 $title_string = '';
-                if( (string)$question->idlab!='' )
+                if ((string)$question->idlab!='' )
                     $title_string = ($question->idlab.' ').$title;
                 $html .= '<h4 class="title" style="'.$hn_style.'">'.$title_string.'</h4>';
             }
@@ -100,7 +100,7 @@ class buildQuestion {
         $table = '';
         $sub_array_all = array();
 
-        if( $question->type=='scale' ){
+        if ($question->type=='scale' ){
             $question_amount = count($question->answer->item);
             $nofixedQArray = range(0,$question_amount-1);
             $nofixedQArray_text = implode(',',$nofixedQArray);
@@ -129,9 +129,9 @@ class buildQuestion {
 
                 $item_count++;
 
-                if( !array_key_exists((string)$question->answer->name,self::$name) )
+                if (!array_key_exists((string)$question->answer->name,self::$name))
                     self::$name[(string)$question->answer->name] = array('type'=>'radio','layer'=>$layer,'rull'=>[]);
-                if( isset($answer['pageskip']) && $answer['pageskip']!='' ){
+                if (isset($answer['pageskip']) && $answer['pageskip']!='' ){
                     $answer['pageskip'] = str_replace('\'','"',$answer['pageskip']);
                     self::$name[(string)$question->answer->name]['rull'][(string)$attr["value"]] = json_decode((string)$answer['pageskip']);
                 }
@@ -147,7 +147,7 @@ class buildQuestion {
                 }else{
                     $answerAttr = $question->answer->attributes();
 
-                    if( $answerAttr['others']!='' ){
+                    if ($answerAttr['others']!='' ){
                         $otherArray = explode(',',$answerAttr['others']);
                         $otherArray_fix = array();
                         foreach($otherArray as $other){
@@ -184,7 +184,7 @@ class buildQuestion {
                 $html .= '</div>';
                 $html .= '</div>';
 
-                if( !array_key_exists((string)$attr["name"],self::$name) )
+                if (!array_key_exists((string)$attr["name"],self::$name))
                     self::$name[(string)$attr["name"]] = array('type'=>'text','layer'=>$layer);
             break;
             case "text_phone":
@@ -193,10 +193,14 @@ class buildQuestion {
             break;
             //------------------------------------------------textarea
             case "textarea":
-                $html .= '<p><textarea placeholder="請勿輸入超過'.$attr["size"].'個中文字" type="textarea" class="qcheck" name="'.$question->answer->name;
-                $html .= '" value="" '.($is_disabled?'disabled="disabled"':'').' maxlength="'.$attr["size"].'" textsize="'.$attr["size"].'" cols="'.$attr["cols"].'" rows="'.$attr["rows"].'"></textarea><p>'.(string)$answer.'</p></p>';
 
-                if( !array_key_exists((string)$question->answer->name,self::$name) )
+                $html .= '<md-input-container>';
+                $html .= '<label>請勿輸入超過'.$attr['size'].'個中文字</label>';
+                $html .= '<textarea type="textarea" class="qcheck" ng-model="'.$question->answer->name.'" name="'.$question->answer->name.'" '.($is_disabled?'disabled="disabled"':'');
+                $html .= ' md-maxlength="'.$attr["size"].'" cols="'.$attr["cols"].'" rows="'.$attr["rows"].'"></textarea>';
+                $html .= '</md-input-container>';
+
+                if (!array_key_exists((string)$question->answer->name,self::$name))
                     self::$name[(string)$question->answer->name] = array('type'=>'textarea','layer'=>$layer);
             break;
             //------------------------------------------------checkbox
@@ -212,7 +216,7 @@ class buildQuestion {
                     ng-change="checkCheckboxLimit('.$limit.', \''.$question->id.'\', '.self::$label_count.', '.$reset.')">'.(string)$answer.'</md-checkbox></div>';
 
                 $html .= '<input type="checkbox"
-                    style="position:absolute;z-index:-1"
+                    style="position:absolute;z-index:-10"
                     ng-model="'.$question->id.'['.self::$label_count.'].checked"
                     class="qcheck"
                     id="lb'.self::$label_count.'"
@@ -242,7 +246,7 @@ class buildQuestion {
                 $html .= '<p style="line-height:1.8em">';
                 $subs_array = NULL;
                 if($attr['sub']!='')
-                    $subs_array = array_map( create_function('$id', 'return "#".$id;'),explode(",",$attr["sub"]) );
+                    $subs_array = array_map( create_function('$id', 'return "#".$id;'),explode(",",$attr["sub"]));
                 $subs_string = '';
                 if(is_array($subs_array))
                     $subs_string = 'sub="'.implode(",",$subs_array).'"';
@@ -312,7 +316,7 @@ class buildQuestion {
                 }
                  $item_count++;
 
-                if( !array_key_exists((string)$attr["name"],self::$name) )
+                if (!array_key_exists((string)$attr["name"],self::$name))
                     self::$name[(string)$attr["name"]] = array('type'=>'scale','layer'=>$layer);
 
             break;
@@ -337,14 +341,14 @@ class buildQuestion {
             break;
             }
 
-            if( $attr["sub"] && $question->type!="select" && $question->type!="list" && $question->type!="checkbox" ){
+            if ($attr["sub"] && $question->type!="select" && $question->type!="list" && $question->type!="checkbox" ){
                 $sub_array = explode(",", $attr["sub"]);
                 foreach($sub_array as $attr_i){
                     $sub = $question_array->xpath("/page/question_sub/id[.='".$attr_i."']/parent::*");
                     if($sub[0])
                         $html .= self::build($sub[0],$question_array,$layer+1,(string)$question->type);
                 }
-            }elseif( $attr["sub"] && $question->type=="select" ){
+            }elseif ($attr["sub"] && $question->type=="select" ){
                 $sub_array = explode(",", $attr["sub"]);
                 foreach($sub_array as $attr_i){
                     $sub = $question_array->xpath("/page/question_sub/id[.='".$attr_i."']/parent::*");
@@ -356,17 +360,17 @@ class buildQuestion {
         }
 
 
-        if( $question->type=='select' ){
+        if ($question->type=='select' ){
 
             $html .= '<select type="select-one" class="qcheck" name="'.$question->answer->name.'"'.($is_disabled?' disabled="disabled"':'').'><option value="-9">請選擇</option>'.$option.'</select>';
 
-            if( !array_key_exists((string)$question->answer->name,self::$name) )
+            if (!array_key_exists((string)$question->answer->name,self::$name))
                 self::$name[(string)$question->answer->name] = array('type'=>'select','layer'=>$layer);
 
             if($attr["type"]=="range"){
                 $html .= '<span class="select_text">'.(string)$question->answer->text.'</span>';
             }
-            if( count($sub_array_all)>0 ){
+            if (count($sub_array_all)>0 ){
                 foreach($sub_array_all as $sub){
                     $html .= self::build($sub,$question_array,$layer+1,"select");
                 }
@@ -374,8 +378,8 @@ class buildQuestion {
         }
 
 
-        if( $question->type=="scale" )
-        if( $scale_style['sstyle']=='2' ){
+        if ($question->type=="scale" )
+        if ($scale_style['sstyle']=='2' ){
 
             foreach($question->answer->degree as $degree){
                 $attr_degree = $degree->attributes();
@@ -415,19 +419,19 @@ class buildQuestion {
             if($amount_degree>5){$scale_width = 25;}elseif($amount_degree>4){$scale_width = 35;}else{$scale_width = 50;}
             foreach($question->answer->degree as $degree){
                 $attr_degree = $degree->attributes();
-                if( isset($attr_degree['width']) ) $scale_width = $attr_degree['width'];
+                if (isset($attr_degree['width'])) $scale_width = $attr_degree['width'];
                 $tableHead .= '<th style="text-align:center;font-size:.8em;width:'.$scale_width.'px"><b>'.(string)$degree.'</b></th>';
             }
 
             $html .= '<table class="scale" cellspacing="0"><thead><tr><th></th><th></th>'.$tableHead.'</tr></thead><tbody>'.$table.'</tbody></table>';
 
-            if( isset($question->answer['randomOrder']) )
+            if (isset($question->answer['randomOrder']))
                 $html .= '<input type="hidden" name="'.$question->answer['randomOrder'].'" value="'.$nofixedQArray_text.'" />';
 
         }
 
 
-        if( $question->type=="scale_text" ){
+        if ($question->type=="scale_text" ){
             foreach($question->answer->degree as $degree){
                 $attr_degree = $degree->attributes();
                 $tableHead .= '<th style="font-size:0.8em;width:'.$attr_degree["width"].'"><b>'.(string)$degree.'</b></th>';
@@ -440,13 +444,13 @@ class buildQuestion {
 
         $html .= '</div>';
 
-        if( $question->type!='explain' && $layer==0 )
+        if ($question->type!='explain' && $layer==0 )
             $html .= '<p class="contribute"></p>';
 
         $html .= '</div>';
 
 
-        if( $question->getName()=="question" )
+        if ($question->getName()=="question" )
             $html .= '</md-card-content>';
 
         return $html;
@@ -476,13 +480,13 @@ class buildQuestion {
                     'filter' => $attr["filter"],
                     'style' => 'min-width:'.$sub_title_length.'em'
                 ));
-                if( $type_attr['style']!='short' ){
+                if ($type_attr['style']!='short' ){
                     $html .= '<p style="margin:2px">'.(string)$answer.$input_text.'</p>';
                 }else{
                     $html .= '<span style="margin:2px">'.(string)$answer.$input_text.'</span>';
                 }
 
-                if( !array_key_exists((string)$attr["name"],self::$name) )
+                if (!array_key_exists((string)$attr["name"],self::$name))
                     self::$name[(string)$attr["name"]] = array('type'=>'text','layer'=>$layer);
 
             }

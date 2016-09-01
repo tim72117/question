@@ -122,13 +122,6 @@ function checkEmpty(obj){
 
         break;
         case "textarea":
-            var value = obj.val();
-            var id = obj.parent('p').parent('div').parent('div').attr('id');
-            var atitle = $('#'+id).children('h2,h3,h4').text();
-            if( value.Blength()>(obj.attr('textsize')*2) ){
-                alert("不能超過"+(obj.attr('textsize'))+"個中文字");
-                return true;
-            }
             value = "skip";
         break;
     }
