@@ -101,13 +101,6 @@ $(function() {
 (function($) {
 
     $.fn.qhide = function( options ) {
-        if( typeof(options)==='string' ){
-            opts = new Object;
-            opts.type = options;
-        }else{
-            opts = options;
-        }
-
         if (this.length>0){
             this.hide();
             this.find('div[id]').not('[parrent=list]').hide();
@@ -115,8 +108,8 @@ $(function() {
             target.attr('disabled','disabled');
             target.filter(':radio:checked').removeAttr('checked');
             target.filter(':text').val('');
-            target.filter(':checkbox').each(function(checkbox, g) {
-                $(g).prop('checked', false).triggerHandler('click')
+            target.filter(':checkbox').each(function(i, checkbox) {
+                $(checkbox).prop('checked', false).triggerHandler('click')
             });
             target.filter('select').find('option:eq(0)').attr('selected','selected');
             if (this.is('.fieldA')){
@@ -128,13 +121,6 @@ $(function() {
     };
 
     $.fn.qshow = function( options ) {
-        if( typeof(options)==='string' ){
-            opts = new Object;
-            opts.type = options;
-        }else{
-            opts = options;
-        }
-
         if(this.length>0){
 
             this.show();
@@ -142,7 +128,7 @@ $(function() {
             this.find(':input:visible').removeAttr('disabled');
 
             if(this.is('.fieldA')){
-                    this.parent('div').find('h2,h3,h4').css('color','');
+                this.parent('div').find('h2,h3,h4').css('color','');
             }
 
         }

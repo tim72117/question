@@ -14,7 +14,7 @@ class buildQuestion {
         return self::$name;
     }
 
-    static function build($question,$question_array,$layer,$parrent)
+    static function build($question,$question_array,$layer, $parent)
     {
         $html = '';
 
@@ -39,8 +39,8 @@ class buildQuestion {
         }
 
 
-        $is_disabled = !($layer==0||($layer>=1&&$parrent=='list'))||$is_disabled_skipfrom;
-        $display_style = ($layer==0||$parrent=='list')?'':' display:none';
+        $is_disabled = !($layer==0||($layer>=1&&$parent->type=='list'))||$is_disabled_skipfrom;
+        $display_style = ($layer==0||$parent->type=='list')?'':' display:none';
 
 
         if ($question->getName()=="question" && $question->type=='explain' ){
@@ -53,12 +53,12 @@ class buildQuestion {
             $display_style .= ';display:none';
         }
 
-        if ($question->type != 'explain' && $parrent != 'list' ){
-            $html .= '<div id="'.$question->id.'" parrent="'.$parrent.'" class="layer'.$layer.'" style="'.$display_style.'">';
-        }elseif ($parrent == 'list' ){
-            $html .= '<div id="'.$question->id.'" parrent="'.$parrent.'" class="layer0" style="'.$display_style.'">';
+        if ($question->type != 'explain' && $parent->type != 'list' ){
+            $html .= '<div id="'.$question->id.'" parrent="'.$parent->type.'" class="layer'.$layer.'" style="'.$display_style.'">';
+        }elseif ($parent->type == 'list' ){
+            $html .= '<div id="'.$question->id.'" parrent="'.$parent->type.'" class="layer0" style="'.$display_style.'">';
         }else{
-            $html .= '<div id="'.$question->id.'" parrent="'.$parrent.'" style="'.$display_style.'">';
+            $html .= '<div id="'.$question->id.'" parrent="'.$parent->type.'" style="'.$display_style.'">';
             $fieldA_display_style = ' display:none';
         }
 
@@ -173,7 +173,7 @@ class buildQuestion {
                 $html .= Form::text((string)$attr["name"], Input::old((string)$attr["name"], ''), array(
                     'placeholder' => $attr["sub_title"],
                     'class' => 'fat qcheck',
-                    'parrent' => $parrent,
+                    'parrent' => $parent->type,
                     //'disabled' => ($is_disabled ? 'disabled' : ''),
                     'maxlength' => $attr["size"],
                     'textsize' => $attr["size"],
@@ -212,12 +212,12 @@ class buildQuestion {
                 $reset = isset($attr['reset']) ? 'true' : 'false';
 
                 $html .= '<div flex="50"><md-checkbox
-                    ng-model="'.$question->id.'['.self::$label_count.'].checked"
-                    ng-change="checkCheckboxLimit('.$limit.', \''.$question->id.'\', '.self::$label_count.', '.$reset.')">'.(string)$answer.'</md-checkbox></div>';
-
+                    ng-model="questions.'.$question->id.'['.$item_count.'].checked"
+                    ng-change="checkCheckboxLimit('.$limit.', \''.$question->id.'\', '.$item_count.', '.$reset.')">'.(string)$answer.'</md-checkbox></div>';
+                
                 $html .= '<input type="checkbox"
                     style="position:absolute;z-index:-10"
-                    ng-model="'.$question->id.'['.self::$label_count.'].checked"
+                    ng-model="questions.'.$question->id.'['.$item_count.'].checked"
                     class="qcheck"
                     id="lb'.self::$label_count.'"
                     name="'.$attr["name"].'"
@@ -228,8 +228,8 @@ class buildQuestion {
                 foreach($sub_array as $attr_i){
                     $sub = $question_array->xpath("/page/question_sub/id[.='".$attr_i."']/parent::*");
                     if (isset($sub[0])) {
-                        $html .= '<div ng-if="'.$question->id.'['.self::$label_count.'].checked">';
-                        $html .= self::buildQuestion_simp($sub[0],$question_array,$layer+1,(string)$question->type);
+                        $html .= '<div ng-show="questions.'.$question->id.'['.$item_count.'].checked" ng-init="initSubs(\''.$attr_i.'\')">';
+                        $html .= self::buildQuestion_simp($sub[0],$question_array,$layer+1, $question);
                         $html .= '</div>';
                     }
                 }
@@ -336,7 +336,7 @@ class buildQuestion {
                 foreach($sub_array as $attr_i){
                     $sub = $question_array->xpath("/page/question_sub/id[.='".$attr_i."']/parent::*");
                     if($sub[0])
-                      $html .= self::build($sub[0],$question_array,$layer+1,"list");
+                      $html .= self::build($sub[0],$question_array,$layer+1, $question);
                 }
             break;
             }
@@ -346,7 +346,7 @@ class buildQuestion {
                 foreach($sub_array as $attr_i){
                     $sub = $question_array->xpath("/page/question_sub/id[.='".$attr_i."']/parent::*");
                     if($sub[0])
-                        $html .= self::build($sub[0],$question_array,$layer+1,(string)$question->type);
+                        $html .= self::build($sub[0],$question_array,$layer+1, $question);
                 }
             }elseif ($attr["sub"] && $question->type=="select" ){
                 $sub_array = explode(",", $attr["sub"]);
@@ -372,7 +372,7 @@ class buildQuestion {
             }
             if (count($sub_array_all)>0 ){
                 foreach($sub_array_all as $sub){
-                    $html .= self::build($sub,$question_array,$layer+1,"select");
+                    $html .= self::build($sub,$question_array,$layer+1, $question);
                 }
             }
         }
@@ -456,7 +456,7 @@ class buildQuestion {
         return $html;
     }
 
-    static function buildQuestion_simp($question,$question_array,$layer,$parrent)
+    static function buildQuestion_simp($question,$question_array,$layer, $parent)
     {
         $is_disabled = false;
         $html = '';
@@ -472,7 +472,7 @@ class buildQuestion {
                 $input_text = Form::text((string)$attr["name"], Input::old((string)$attr["name"], ''), array(
                     'placeholder' => $attr["sub_title"],
                     'class' => 'fat qcheck',
-                    'parrent' => $parrent,
+                    'parrent' => (string)$parent->type,
                     //'disabled' => $is_disabled ? 'disabled' : '',
                     'maxlength' => $attr["size"],
                     'textsize' => $attr["size"],
@@ -493,7 +493,7 @@ class buildQuestion {
             $html .= '</div>';
         break;
         default:
-            $html .= self::build($question,$question_array,$layer,$parrent);
+            $html .= self::build($question,$question_array,$layer, $parent);
         break;
         }
         return $html;

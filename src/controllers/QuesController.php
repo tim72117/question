@@ -112,7 +112,7 @@ class QuesController extends BaseController {
             }
         }
 
-        $this->newpage->bulidQuestion(0);
+        $this->newpage->bulidQuestion();
         Session::put('name_array', $this->newpage->name_array);
         $init_value = '';
         if (isset($this->config['blade']) && is_callable($this->config['blade'])) {

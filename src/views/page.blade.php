@@ -27,10 +27,12 @@ var app = angular.module('app', ['ngSanitize', 'ngMaterial']);
 
 app.controller('quesController', function($scope, $filter) {
 
+    $scope.questions = {};
     $scope.percent = '<?=$percent?>';
     $scope.checkCheckboxLimit = function(limit, id, index, reset) {
-        var items = Object.keys($scope[id]).map(function (key) {return $scope[id][key]});
-        $scope[id][index].reset = reset;
+
+        var items = Object.keys($scope.questions[id]).map(function (key) {return $scope.questions[id][key]});
+        $scope.questions[id][index].reset = reset;
 
         for (var i=0; i < items.length; i++) {
             if (reset && !items[i].reset) {
@@ -41,8 +43,12 @@ app.controller('quesController', function($scope, $filter) {
             }
         }
         if (limit != 0 && $filter('filter')(items, {checked: true}).length > limit) {
-            $scope[id][index].checked = false;
+            $scope.questions[id][index].checked = false;
         }
+    };
+
+    $scope.initSubs = function(id) {
+        $('#'+id).qshow();
     };
 
 });

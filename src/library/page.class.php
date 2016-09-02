@@ -9,7 +9,6 @@ class page {
     public $node = '';
     public $question_array = '';
     public $root = './';
-    public $is_show_all_question = true;
     public $option = NULL;
     public $question_html = '';
     public $name_array = [];
@@ -18,15 +17,8 @@ class page {
     function init($option)
     {
         $this->option = $option;
-        $this->randomQuesRoot = false;
-        $this->randomQuesSub = false;
         $this->isShunt = false;
         $pagetree = true;
-
-        $_SESSION['voice'] = false;
-        $_SESSION['randomQuesRoot'] = false;
-        $_SESSION['randomQuesScale'] = false;
-        $_SESSION['randomQuesScaleControlSessionName'] = 'randomQuesScaleControl';
     }
 
     function loadxml($census, $page)
@@ -38,56 +30,21 @@ class page {
         $this->question_array = simplexml_load_string($doc->xml);
     }
 
-    function bulidQuestion($num)
+    function bulidQuestion()
     {
         $buildQuestion = 'app\\library\\'.$this->option['buildQuestion'].'\\buildQuestion';
         $buildQuestion::$hide = $this->hide;
-
-        $question_amount = count($this->question_array->question);
-
-        $isfixedQArray = array();
-        $nofixedQArray = array();
-
-        for($qi=0;$qi<$question_amount;$qi++){
-
-            $qAttr = $this->question_array->question[$qi]->attributes();
-            if( isset($qAttr['fixed']) ){
-                array_push($isfixedQArray,$qi);
-            }else{
-                array_push($nofixedQArray,$qi);
-            }
-        }
 
         if( isset($this->isShunt) && $this->isShunt!='' ){
             $_SESSION['isShuntArray'] = explode(',',$this->isShunt);
         }
 
-        if( $this->randomQuesRoot ){
-            shuffle($nofixedQArray);
-        }
-
-        $count_nofixedQ_i = 0;
-
-        $start = 0;
-        $amount = $num==0 ? $question_amount : $num;
-
-        for($i=$start;$i<$amount;$i++){
-
-            if( in_array($i,$isfixedQArray) || true ){//test
-                $randQi = $i;
-            }else{
-
-                $randQi = $nofixedQArray[$count_nofixedQ_i];
-                $count_nofixedQ_i++;
-            }
-
-            $question = $this->question_array->question[$randQi];
-
+        foreach ($this->question_array as $question) {
             if($question->getName()=="question"){
-                $this->question_html .= $buildQuestion::build($question,$this->question_array,0,"no");
+                $this->question_html .= $buildQuestion::build($question,$this->question_array,0, (object)['type' => 'no']);
             }
-
         }
+
         $this->name_array = $buildQuestion::$name;
     }
 
