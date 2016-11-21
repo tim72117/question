@@ -29,7 +29,7 @@ app.controller('quesController', function($scope, $filter) {
 
     $scope.questions = {};
     $scope.percent = '<?=$percent?>';
-    $scope.checkCheckboxLimit = function(limit, id, index, reset) {
+    $scope.checkCheckboxLimit = function(limit, id, index, reset, name) {
 
         var items = Object.keys($scope.questions[id]).map(function (key) {return $scope.questions[id][key]});
         $scope.questions[id][index].reset = reset;
@@ -45,6 +45,8 @@ app.controller('quesController', function($scope, $filter) {
         if (limit != 0 && $filter('filter')(items, {checked: true}).length > limit) {
             $scope.questions[id][index].checked = false;
         }
+
+        $('[name=' + name + ']').triggerHandler('change');
     };
 
     $scope.initSubs = function(id) {

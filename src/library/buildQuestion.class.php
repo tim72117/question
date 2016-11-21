@@ -213,7 +213,7 @@ class buildQuestion {
 
                 $html .= '<div flex="50"><md-checkbox
                     ng-model="questions.'.$question->id.'['.$item_count.'].checked"
-                    ng-change="checkCheckboxLimit('.$limit.', \''.$question->id.'\', '.$item_count.', '.$reset.')">'.(string)$answer.'</md-checkbox></div>';
+                    ng-change="checkCheckboxLimit('.$limit.', \''.$question->id.'\', '.$item_count.', '.$reset.', \'' . $attr["name"] . '\')">'.(string)$answer.'</md-checkbox></div>';
                 
                 $html .= '<input type="checkbox"
                     style="position:absolute;z-index:-10"
