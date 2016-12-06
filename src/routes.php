@@ -44,6 +44,6 @@ Route::filter('ques-login', function($route) {
     $root = $route->getParameter('root');
     if (!Ques\Answerer::check($root)) {
         Session::flush();
-        return Redirect::to(Request::fullUrl());
+        return Redirect::to(Request::root(). '/'. Request::segment(1). '/'. Request::segment(2));
     }
 });
