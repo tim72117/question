@@ -264,10 +264,10 @@ class QuesController extends BaseController {
 
         $loginView = $this->config['auth']['loginView'];
 
-        $intro_view = array_key_exists('intro', $loginView) ? $loginView['intro'] : 'intro';
+        $intro_view = array_key_exists('intro', $loginView) ? $loginView['intro'] : $this->package_name . '::intro';
 
         View::share('doc', $this->doc);
-        $contents = View::make($this->package_name . '::' . $intro_view)
+        $contents = View::make($intro_view)
             ->nest('child_head', $loginView['head'])
             ->nest('child_body', $loginView['body'])
             ->nest('child_footer', $loginView['footer']);
