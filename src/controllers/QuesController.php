@@ -322,7 +322,7 @@ class QuesController extends BaseController {
                     $config['auth']['checker']($validator,$this);
 
                 if (count($validator->getMessageBag()->all()) === 0) {
-                    return Redirect::to($this->root.'/page');
+                    return Redirect::to('ques/' . $this->root.'/page');
                 }else{
                     return 'error2';
                 }

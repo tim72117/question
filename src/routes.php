@@ -17,7 +17,7 @@ Route::group(array('prefix' => 'ques'), function() {
     Route::get('{root}', array('before' => 'ques-folder|ques-init', 'uses' => 'QuesController@loginPage'));
     Route::get('{root}/page', array('before' => 'ques-folder|ques-login', 'uses' => 'QuesController@page'));
     Route::post('{root}/qlogin', array('before' => 'ques-folder|csrf', 'uses' => 'QuesController@login'));
-    Route::get('{root}/qmlogin', array('before' => 'folder', 'uses' => 'HomeController@mlogin'));
+    Route::get('{root}/qmlogin', array('before' => 'folder', 'uses' => 'QuesController@mlogin'));
     Route::post('{root}/write', array('before' => 'ques-folder|ques-login|csrf', 'uses' => 'QuesController@write'));
     Route::any('{root}/public/{data}', array('before' => 'ques-folder', 'uses' => 'QuesADController@publicData'));
     Route::any('{root}/share/{sharepage}', array('before' => 'ques-folder', 'uses' => 'QuesADController@sharePage'));
